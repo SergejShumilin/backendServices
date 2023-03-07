@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.dao.UserRepository;
 import org.example.entity.User;
+import org.example.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,22 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class SpringBootJPAIntegrationTest {
 
     @Autowired
-    UserRepository userRepository;
+    private transient UserService userService;
 
     @Test
     public void shouldSaveEmployeeToDB() {
         User user = new User();
-        user.setId(1);
+        user.setId(UUID.randomUUID());
         user.setName("name");
 
-        userRepository.save(user);
+        userService.save(user);
 
-        Optional<User> optionalEmployee = userRepository.findById(1);
-        User emp = null;
-        if(optionalEmployee.isPresent()){
-            emp = optionalEmployee.get();
-        }
-
-        assertNotNull(emp);
+        assertNotNull(userService.findByName(user.getName()));
     }
 }
